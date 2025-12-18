@@ -14,6 +14,23 @@ create table duenos (
     DIRECCION VARCHAR(100)
 )
 
+/* 1
+mike
+kaer
+11-2233-4455
+junin
+
+2
+jose
+carrasco
+11-3356-5555
+belgrano
+
+ezio
+audiotre
+?????
+????? */
+
 /*Ejercicio 3 – Crear tabla mascotas 
 Crear la tabla mascotas con las siguientes columnas:*/
 
@@ -53,26 +70,55 @@ create table historial_clinico (
 /*Ejercicio 6 – Insertar registros 
 Insertar: listo*/ 
 ● 3 dueños con información completa *
+
 ● 3 mascotas, cada una asociada a un dueño *
+INSERT INTO `mascotas` (`id`, `nombre`, `especie`, `fecha_nacimiento`, `id_dueno`) VALUES
+(1, 'kurt', 'pitbull', '2022-05-15', 1),
+(2, 'lizy', 'komodoro', '2021-10-10', 2);
+
 ● 2 veterinarios con especialidades distintas *
 ● 3 registros de historial clínico*
 
+
+
 /*Ejercicio 7 – Actualizar registros 
 Realizar las siguientes actualizaciones:*/ 
-1. Cambiar la dirección de un dueño (por ID o nombre). 
+1. Cambiar la dirección de un dueño (por ID o nombre).
+(UPDATE duenos SET DIRECCION = 'Avenida Central 456, Ciudad' 
+WHERE id = 1;)*
+
 2. Actualizar la especialidad de un veterinario (por ID o matrícula). 
+
+(UPDATE veterinarios 
+SET especialidad = 'Dermatología Veterinaria' 
+WHERE id = 2;)*
+
 3. Editar la descripción de un historial clínico (por ID).
+(UPDATE historial_clinico 
+SET descripcion = 'El paciente muestra mejoría. Se ajustó la dosis de analgésicos y se recomienda reposo por 3 días más.' 
+WHERE id = 10;)*
 
 /*Ejercicio 8 – Eliminar registros */
 1. Eliminar una mascota (por ID o nombre). 
+(DELETE FROM `mascotas` WHERE id = 3;)*
 2. Verificar que se eliminen automáticamente los registros del historial clínico asociados 
-(ON DELETE CASCADE).
+(ON DELETE CASCADE). 
+(COUNT(*): 0)*
 
 /*Ejercicio 9 – JOIN simple 
 Consulta que muestre: */
 ● Nombre de la mascota 
 ● Especie 
 ● Nombre completo del dueño (nombre + apellido)
+
+SELECT 
+    m.nombre AS mascota, 
+    m.especie AS especie, 
+    CONCAT(d.NOMBRE, ' ', d.APELLIDO) AS dueno,
+    d.TELEFONO AS Contacto
+FROM mascotas AS m
+INNER JOIN duenos AS d ON m.id_dueno = d.id
+WHERE d.NOMBRE = 'Mike';
 
 /*Ejercicio 10 – JOIN múltiple con historial 
 Consulta que muestre todas las entradas del historial clínico con: */
@@ -81,6 +127,19 @@ Consulta que muestre todas las entradas del historial clínico con: */
 ● Nombre completo del veterinario 
 ● Fecha de registro 
 ● Descripción
+
+(SELECT 
+    m.nombre AS nombre_mascota,
+    m.especie,
+    CONCAT(d.NOMBRE, ' ', d.APELLIDO) AS nombre_completo_dueno,
+    CONCAT(v.nombre, ' ', v.apellido) AS nombre_completo_veterinario,
+    hc.fecha_registro,
+    hc.descripcion
+FROM historial_clinico AS hc
+INNER JOIN mascotas AS m ON hc.id_mascota = m.id
+INNER JOIN duenos AS d ON m.id_dueno = d.id
+INNER JOIN veterinario AS v ON hc.id_veterinario = v.id
+ORDER BY hc.fecha_registro DESC;)
 
 Ordenados por fecha de registro descendente (DESC). 
 
